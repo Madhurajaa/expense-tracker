@@ -4,6 +4,8 @@ from datetime import datetime
 class Expense:
     """Represent a single expense with validation and useful operations."""
 
+    VALID_CATEGORIES = ["food", "rent", "transport", "utilities", "other"]
+
     def __init__(self, amount, category, date, note=""):
         """Initialize an expense after validating its input."""
 
@@ -43,7 +45,9 @@ class Expense:
             f"  Category: {self.category}\n"
             f"  Date: {self.date}\n"
             f"  Note: {self.note}"
+            
         )
+    
 
     def to_dict(self):
         """Return the expense as a plain dictionary."""
@@ -53,3 +57,13 @@ class Expense:
             "date": self.date,
             "note": self.note,
         }
+
+    def __repr__(self):
+        """Return a developer-friendly representation of the expense."""
+        return (
+            f"Expense({self.amount}, "
+            f"'{self.category}', "
+            f"'{self.date}', "
+            f"'{self.note}')"
+        )
+    
