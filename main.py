@@ -12,8 +12,8 @@ def main():
         Expense(250, "food", "2026-08-10", "Lunch"),
         Expense(180, "food", "2026-08-11", "Breakfast"),
         Expense(1200, "rent", "2026-08-01", "Monthly rent"),
-        Expense(300, "travel", "2026-08-05", "Bus tickets"),
-        Expense(500, "travel", "2026-08-07", "Auto fare"),
+        Expense(300, "transport", "2026-08-05", "Bus tickets"),
+        Expense(500, "transport", "2026-08-07", "Auto fare"),
         Expense(150, "food", "2026-08-12", "Snacks"),
     ]
 
@@ -22,7 +22,7 @@ def main():
 
     tracker.add_category(Category("food", 500))
     tracker.add_category(Category("rent", 2000))
-    tracker.add_category(Category("travel", 1000))
+    tracker.add_category(Category("trasport", 1000))
 
     print("Expenses")
     print("-" * 50)

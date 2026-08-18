@@ -18,6 +18,9 @@ class Expense:
         if not isinstance(category, str) or not category.strip():
             raise ValueError("Category must not be empty.")
 
+        if category not in self.VALID_CATEGORIES:
+            raise ValueError(f"Invalid category: {category}")  
+
         if not isinstance(date, str) or not date.strip():
             raise ValueError("Date must not be empty.")
 
