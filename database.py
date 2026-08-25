@@ -66,6 +66,115 @@ class Database:
             (category_id,),
         ).fetchone()
 
+    def total_spend(self):
+        """Return the total amount spent."""
+        return self.conn.execute(
+            """
+            SELECT SUM(amount) AS total_spend
+            FROM expenses
+            """
+        ).fetchone()[0]
+
+    def spend_by_category(self):
+        """Return total spending grouped by category."""
+        return self.conn.execute(
+            """
+            SELECT categories.name,
+                   SUM(expenses.amount) AS total_spend
+            FROM expenses
+            JOIN categories
+                ON expenses.category_id = categories.id
+            GROUP BY categories.name
+            ORDER BY total_spend DESC
+            """
+        ).fetchall()
+
+    def monthly_spend(self, month):
+        """Return total spending for a given month."""
+        return self.conn.execute(
+            """
+            SELECT SUM(amount) AS total_spend
+            FROM expenses
+            WHERE date >= ?
+              AND date < date(?, '+1 month')
+            """,
+            (month + "-01", month + "-01"),
+        ).fetchone()[0]
+
+    def monthly_spend_by_category(self, month):
+        """Return spending per category for a given month."""
+        return self.conn.execute(
+            """
+            SELECT categories.name,
+                   SUM(expenses.amount) AS total_spend
+            FROM expenses
+            JOIN categories
+                ON expenses.category_id = categories.id
+            WHERE expenses.date >= ?
+              AND expenses.date < date(?, '+1 month')
+            GROUP BY categories.name
+            ORDER BY total_spend DESC
+            """,
+            (month + "-01", month + "-01"),
+        ).fetchall()
+
+    def top_expenses(self, limit=5):
+        """Return the largest expenses."""
+        return self.conn.execute(
+            """
+            SELECT expenses.amount,
+                   categories.name,
+                   expenses.date,
+                   expenses.note
+            FROM expenses
+            JOIN categories
+                ON expenses.category_id = categories.id
+            ORDER BY expenses.amount DESC
+            LIMIT ?
+            """,
+            (limit,),
+        ).fetchall()
+
+    def over_budget_categories(self):
+        """Return categories whose spending exceeds their budget."""
+        return self.conn.execute(
+            """
+            SELECT categories.name,
+                   categories.budget,
+                   SUM(expenses.amount) AS total_spent
+            FROM expenses
+            JOIN categories
+                ON expenses.category_id = categories.id
+            GROUP BY categories.id
+            HAVING SUM(expenses.amount) > categories.budget
+            """
+        ).fetchall()
+
+    def average_spend_by_category(self):
+        """Return average spending per category."""
+        return self.conn.execute(
+            """
+            SELECT categories.name,
+                   AVG(expenses.amount) AS average_spend
+            FROM expenses
+            JOIN categories
+                ON expenses.category_id = categories.id
+            GROUP BY categories.name
+            """
+        ).fetchall()
+
+    def expenses_per_month(self):
+        """Return the number of expenses for each month."""
+        return self.conn.execute(
+            """
+            SELECT strftime('%Y-%m', date) AS month,
+                   COUNT(*) AS expense_count
+            FROM expenses
+            GROUP BY strftime('%Y-%m', date)
+            ORDER BY month
+            """
+        ).fetchall()
+
     def close(self):
         """Close the database connection."""
         self.conn.close()
