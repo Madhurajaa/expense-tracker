@@ -22,7 +22,7 @@ def main():
 
     tracker.add_category(Category("food", 500))
     tracker.add_category(Category("rent", 2000))
-    tracker.add_category(Category("trasport", 1000))
+    tracker.add_category(Category("transport", 1000))
 
     print("Expenses")
     print("-" * 50)
